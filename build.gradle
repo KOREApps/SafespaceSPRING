@@ -25,5 +25,14 @@ repositories {
 
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter')
+	compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+
+    compile('org.liquibase:liquibase-core')
+    compile('org.hsqldb:hsqldb')
+    compile('org.postgresql:postgresql:42.1.4')
+
+    compile('org.projectlombok:lombok:1.16.18')
+
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
