@@ -6,5 +6,45 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
+    <changeSet id="1" author="robert">
+        <createSequence sequenceName="s" startValue="1" incrementBy="1"/>
+        <createTable tableName="role">
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="pkey_role"/>
+            </column>
+            <column name="name" type="nvarchar(50)"/>
+        </createTable>
+        <createTable tableName="user">
+            <column name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="pkey_user"/>
+            </column>
+            <column name="username" type="nvarchar(50)"/>
+            <column name="first_name" type="nvarchar(50)"/>
+            <column name="last_name" type="nvarchar(50)"/>
+            <column name="password" type="nvarchar(64)"/>
+            <column name="role" type="bigint">
+                <constraints foreignKeyName="fkey_user_role" references="role(id)" nullable="false"/>
+            </column>
+        </createTable>
+        <createTable tableName="project">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKeyName="pkey_project" primaryKey="true"/>
+            </column>
+            <column name="name" type="nvarchar(100)"/>
+            <column name="description" type="clob"/>
+        </createTable>
+        <createTable tableName="report">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pkey_report"/>
+            </column>
+            <column name="title" type="nvarchar(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="clob"/>
+            <column name="project" type="bigint">
+                <constraints foreignKeyName="fkey_report_project" references="project(id)" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>
