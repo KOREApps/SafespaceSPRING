@@ -1,25 +1,25 @@
 package no.ntnu.kore.safespace.entity;
 
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
-public class Role {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Project {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
-    @Column(name = "name")
     private String name;
-    @OneToMany(mappedBy = "role")
-    private List<User> users;
+    private String description;
 
 }

@@ -5,21 +5,19 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
+@Entity
+@Table(name = "bug_report")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Role {
+public class BugReport {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
-    @Column(name = "name")
-    private String name;
-    @OneToMany(mappedBy = "role")
-    private List<User> users;
+    private String title;
+    private String description;
+    //private User user;
 
 }
