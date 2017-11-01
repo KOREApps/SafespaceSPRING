@@ -24,25 +24,25 @@ public class UserController implements RestService<User, Long> {
 
     @Override
     public ResponseEntity<List<User>> getAll() {
-        return new ResponseEntity<List<User>>(userRepository.findAll(), HttpStatus.OK);
+        return new ResponseEntity<>(userRepository.findAll(), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<User> getOne(Long id) {
-        return new ResponseEntity<User>(userRepository.findOne(id), HttpStatus.OK);
+        return new ResponseEntity<>(userRepository.findOne(id), HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<User> add(@RequestBody User user) {
-        return new ResponseEntity<User>(userRepository.save(user), HttpStatus.OK);
+        return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<User> update(Long id, User user) {
+    public ResponseEntity<User> update(Long id, @RequestBody User user) {
         if (userRepository.exists(id)) {
-            return new ResponseEntity<User>(userRepository.save(user), HttpStatus.OK);
+            return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
         } else {
-            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

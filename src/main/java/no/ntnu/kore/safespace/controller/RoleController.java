@@ -40,7 +40,12 @@ public class RoleController implements RestService<Role, Long> {
     }
 
     @Override
-    public ResponseEntity<Role> update(Long id, Role role) {
-        return null;
+    public ResponseEntity<Role> update(Long id, @RequestBody Role role) {
+        if (roleRepository.exists(id)) {
+            role = roleRepository.save(role);
+            return new ResponseEntity<>(role, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
