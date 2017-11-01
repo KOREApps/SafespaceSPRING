@@ -14,8 +14,8 @@
             </column>
             <column name="name" type="nvarchar(50)"/>
         </createTable>
-        <createTable tableName="user">
-            <column name="id" type="uuid">
+        <createTable tableName="user_account">
+            <column name="id" autoIncrement="true" type="bigint">
                 <constraints primaryKey="true" primaryKeyName="pkey_user"/>
             </column>
             <column name="username" type="nvarchar(50)"/>
@@ -43,6 +43,26 @@
             <column name="description" type="clob"/>
             <column name="project" type="bigint">
                 <constraints foreignKeyName="fkey_report_project" references="project(id)" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="robert">
+        <createTable tableName="image">
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="pkey_image"/>
+            </column>
+            <column name="name" type="nvarchar(50)"/>
+            <column name="file_extension" type="nvarchar(10)"/>
+            <column name="description" type="clob"/>
+        </createTable>
+        <createTable tableName="bug_reports">
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="pkey_bug_report"/>
+            </column>
+            <column name="title" type="nvarchar(50)"/>
+            <column name="description" type="clob"/>
+            <column name="user_account" type="bigint">
+                <constraints foreignKeyName="fkey_bug_report_user_account" references="user_account(id)" nullable="false"/>
             </column>
         </createTable>
     </changeSet>
