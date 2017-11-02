@@ -15,15 +15,13 @@ public class ImageService {
 
 
     public void saveToDisk(Image image, byte[] data) throws IOException {
-        String filePath = getFilePathString(image);
         Path file = getFilePath(image);
-        System.out.println(file.toUri());
-        System.out.println(file.getFileName());
         Files.write(file, data);
     }
 
-    public void getDataFromDisk(Image image) throws IOException {
+    public byte[] getDataFromDisk(Image image) throws IOException {
         Path file = getFilePath(image);
+        return Files.readAllBytes(file);
     }
 
     private Path getFilePath(Image image){

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,10 @@ import java.util.List;
 public class ImageController implements RestService<Image, Long> {
 
     private static final Logger LOG = LoggerFactory.getLogger(ImageController.class);
+
+    private static final MediaType JPEG_TYPE = MediaType.IMAGE_JPEG;
+    private static final MediaType PNG_TYPE = MediaType.IMAGE_PNG;
+    private static final MediaType BYTE_TYPE = MediaType.APPLICATION_OCTET_STREAM;
 
     private ImageRepository imageRepository;
     private ImageService imageService;
@@ -64,6 +69,28 @@ public class ImageController implements RestService<Image, Long> {
         } catch (IOException ex) {
             LOG.warn("Failed to save image to disk", ex);
             return new ResponseEntity<Image>(image, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(path = "data/{id}", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> getImageData(@PathVariable(value = "id") Long id) {
+        Image image = imageRepository.findOne(id);
+        try {
+            byte[] data = imageService.getDataFromDisk(image);
+            return ResponseEntity.ok().contentType(getMediaType(image)).body(data);
+        } catch (IOException ex) {
+            LOG.warn("Failed to read image from disk", ex);
+            return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private MediaType getMediaType(Image image) {
+        if (image.getFileExtension().equals("jpg") || image.getFileExtension().equals("jpeg")) {
+            return JPEG_TYPE;
+        } else if (image.getFileExtension().equals("png")) {
+            return PNG_TYPE;
+        } else {
+            return BYTE_TYPE;
         }
     }
 
