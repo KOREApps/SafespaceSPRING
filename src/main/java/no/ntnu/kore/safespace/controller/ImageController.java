@@ -53,7 +53,7 @@ public class ImageController {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Image> add(@RequestBody Image image) {
         image = imageRepository.save(image);
-        if (image.getData() != null) {
+        if (image.getData() != null || image.getData().equals("")) {
             boolean success = saveImageToDisk(image);
             if (!success) {
                 return new ResponseEntity<>(image, HttpStatus.INTERNAL_SERVER_ERROR);
