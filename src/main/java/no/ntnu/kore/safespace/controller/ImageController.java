@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("images")
-public class ImageController implements RestService<Image, Long> {
+public class ImageController {
 
     private static final Logger LOG = LoggerFactory.getLogger(ImageController.class);
 
@@ -39,18 +39,30 @@ public class ImageController implements RestService<Image, Long> {
         return new ResponseEntity<>(images, HttpStatus.OK);
     }
 
-    @Override
-    public ResponseEntity<Image> getOne(Long id) {
-        return new ResponseEntity<>(imageRepository.findOne(id), HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<Image> add(@RequestBody Image image) {
-        image = imageRepository.save(image);
+    @RequestMapping(path = "{id}", method = RequestMethod.GET)
+    public ResponseEntity<Image> getOne(
+            @PathVariable(value = "id") Long id,
+            @RequestParam(value = "data", defaultValue = "false") boolean withData) {
+        Image image = imageRepository.findOne(id);
+        if (withData) {
+            image.setData(getB64DataFromDisk(image));
+        }
         return new ResponseEntity<>(image, HttpStatus.OK);
     }
 
-    @Override
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<Image> add(@RequestBody Image image) {
+        image = imageRepository.save(image);
+        if (image.getData() != null) {
+            boolean success = saveImageToDisk(image);
+            if (!success) {
+                return new ResponseEntity<>(image, HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity<>(image, HttpStatus.OK);
+    }
+
+    @RequestMapping(path = "{id}", method = RequestMethod.PUT)
     public ResponseEntity<Image> update(Long id, @RequestBody Image image) {
         if (imageRepository.exists(id)) {
             image = imageRepository.save(image);
@@ -63,12 +75,11 @@ public class ImageController implements RestService<Image, Long> {
     @RequestMapping(path = "data/{id}", method = RequestMethod.POST)
     public ResponseEntity<Image> addImageData(@PathVariable(value = "id") Long id, @RequestBody byte data[]){
         Image image = imageRepository.findOne(id);
-        try {
-            imageService.saveToDisk(image, data);
-            return new ResponseEntity<Image>(image, HttpStatus.OK);
-        } catch (IOException ex) {
-            LOG.warn("Failed to save image to disk", ex);
-            return new ResponseEntity<Image>(image, HttpStatus.INTERNAL_SERVER_ERROR);
+        boolean success = saveImageToDisk(image, data);
+        if (success) {
+            return new ResponseEntity<>(image, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(image, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -81,6 +92,35 @@ public class ImageController implements RestService<Image, Long> {
         } catch (IOException ex) {
             LOG.warn("Failed to read image from disk", ex);
             return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private boolean saveImageToDisk(Image image){
+        try {
+            imageService.saveB64ToDisk(image, image.getData());
+            return true;
+        } catch (IOException ex) {
+            LOG.warn("Failed to save image to disk", ex);
+            return false;
+        }
+    }
+
+    private boolean saveImageToDisk(Image image, byte[] data) {
+        try {
+            imageService.saveToDisk(image, data);
+            return true;
+        } catch (IOException ex) {
+            LOG.warn("Failed to save image to disk", ex);
+            return false;
+        }
+    }
+
+    private String getB64DataFromDisk(Image image){
+        try {
+            return imageService.getB64FromDisk(image);
+        } catch (IOException ex) {
+            LOG.warn("Failed to fetch image from disk", ex);
+            return "";
         }
     }
 

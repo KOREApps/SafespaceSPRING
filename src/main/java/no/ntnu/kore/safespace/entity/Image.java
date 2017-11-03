@@ -19,5 +19,7 @@ public class Image {
     @Column(name = "file_extension")
     private String fileExtension;
     private String description;
+    @Transient
+    private String data;
 
 }
