@@ -30,7 +30,7 @@ public class ProjectController implements RestService<Project, Long> {
     }
 
     @Override
-    public ResponseEntity<Project> getOne(@PathVariable(value = "id") Long id) {
+    public ResponseEntity getOne(@PathVariable(value = "id") Long id) {
         Project project = projectRepository.findOne(id);
         if (project != null) {
             return new ResponseEntity<>(project, HttpStatus.OK);
@@ -40,18 +40,43 @@ public class ProjectController implements RestService<Project, Long> {
     }
 
     @Override
-    public ResponseEntity<Project> add(@RequestBody Project project) {
-        project = projectRepository.save(project);
-        return new ResponseEntity<>(project, HttpStatus.OK);
-    }
-
-    @Override
-    public ResponseEntity<Project> update(@PathVariable(value = "id") Long id, @RequestBody Project project) {
-        if (projectRepository.findOne(id) != null && id.equals(project.getId())) {
+    public ResponseEntity add(@RequestBody Project project) {
+        ValidCheckResult validCheckResult = validPost(project);
+        if (validCheckResult.isValid()) {
             project = projectRepository.save(project);
             return new ResponseEntity<>(project, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(project, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(validCheckResult, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Override
+    public ValidCheckResult validPost(Project newEntity) {
+        if (newEntity.getId() != null) {
+            return new ValidCheckResult(false, "New entity id must be null");
+        }
+        return ValidCheckResult.OK;
+    }
+
+    @Override
+    public ResponseEntity update(@PathVariable(value = "id") Long id, @RequestBody Project project) {
+        ValidCheckResult validCheckResult = validPut(project, id);
+        if (validCheckResult.isValid()) {
+            project = projectRepository.save(project);
+            return new ResponseEntity<>(project, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(validCheckResult, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ValidCheckResult validPut(Project newEntity, Long id) {
+        Project currentProject = projectRepository.findOne(id);
+        if (currentProject == null) {
+            return new ValidCheckResult(false, "Id does not exist");
+        } else if(newEntity.getId() == null || !newEntity.getId().equals(id)) {
+            return new ValidCheckResult(false, "Id in json does not match id in path");
+        }
+        return ValidCheckResult.OK;
     }
 }
