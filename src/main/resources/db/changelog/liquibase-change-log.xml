@@ -65,5 +65,17 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="3" author="robert">
+        <createTable tableName="documentation">
+            <column name="id" autoIncrement="true" type="bigint">
+                <constraints primaryKey="true" primaryKeyName="pkey_documentation"/>
+            </column>
+            <column name="title" type="nvarchar(50)"/>
+            <column name="description" type="clob"/>
+            <column name="project" type="bigint">
+                <constraints foreignKeyName="fkey_documentation_project" references="project(id)" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>
