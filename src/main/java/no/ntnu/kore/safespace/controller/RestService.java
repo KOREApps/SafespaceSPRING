@@ -14,12 +14,12 @@ public interface RestService<T, I> {
     public ResponseEntity<List<T>> getAll();
 
     @RequestMapping(path = "{id}", method = RequestMethod.GET)
-    public ResponseEntity<T> getOne(@PathVariable(value = "id") I id);
+    public ResponseEntity<T> getOne(I id);
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<T> add(T t);
 
     @RequestMapping(path = "{id}", method = RequestMethod.PUT)
-    public ResponseEntity<T> update(@PathVariable(value = "id") I id, T t);
+    public ResponseEntity<T> update(I id, T t);
 
 }
