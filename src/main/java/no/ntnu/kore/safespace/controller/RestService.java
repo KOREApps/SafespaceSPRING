@@ -11,15 +11,19 @@ import java.util.List;
 public interface RestService<T, I> {
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<T>> getAll();
+    public ResponseEntity getAll();
 
     @RequestMapping(path = "{id}", method = RequestMethod.GET)
-    public ResponseEntity<T> getOne(I id);
+    public ResponseEntity getOne(I id);
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<T> add(T t);
+    public ResponseEntity add(T t);
+
+    public ValidCheckResult validPost(T newEntity);
 
     @RequestMapping(path = "{id}", method = RequestMethod.PUT)
-    public ResponseEntity<T> update(I id, T t);
+    public ResponseEntity update(I id, T t);
+
+    public ValidCheckResult validPut(T newEntity, I id);
 
 }

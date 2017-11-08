@@ -34,15 +34,40 @@ public class UserController implements RestService<User, Long> {
 
     @Override
     public ResponseEntity<User> add(@RequestBody User user) {
-        return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
+        ValidCheckResult validCheckResult = validPost(user);
+        if (validCheckResult.isValid()) {
+            return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ValidCheckResult validPost(User newEntity) {
+        if (newEntity.getId() != null) {
+            return new ValidCheckResult(false, "New entity id must be null");
+        }
+        return ValidCheckResult.OK;
     }
 
     @Override
     public ResponseEntity<User> update(Long id, @RequestBody User user) {
-        if (userRepository.exists(id)) {
+        ValidCheckResult validCheckResult = validPut(user, id);
+        if (validCheckResult.isValid()) {
             return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @Override
+    public ValidCheckResult validPut(User newEntity, Long id) {
+        User currentUser = userRepository.findOne(id);
+        if (currentUser == null) {
+            return new ValidCheckResult(false, "Id does not exist");
+        } else if(newEntity.getId() == null || !newEntity.getId().equals(id)) {
+            return new ValidCheckResult(false, "Id in json does not match id in path");
+        }
+        return ValidCheckResult.OK;
     }
 }
