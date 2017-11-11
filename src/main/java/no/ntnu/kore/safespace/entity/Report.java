@@ -21,7 +21,6 @@ public class Report {
     private String description;
     @ManyToOne
     @JoinColumn(name = "project")
-    @JsonBackReference
     private Project project;
 
 }
