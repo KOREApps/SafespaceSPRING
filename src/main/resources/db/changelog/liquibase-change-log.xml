@@ -13,11 +13,19 @@
             </column>
             <column name="name" type="nvarchar(50)"/>
         </createTable>
+        <insert tableName="role">
+            <column name="name" value="ADMIN"/>
+        </insert>
+        <insert tableName="role">
+            <column name="name" value="USER"/>
+        </insert>
         <createTable tableName="user_account">
             <column name="id" autoIncrement="true" type="bigint">
                 <constraints primaryKey="true" primaryKeyName="pkey_user"/>
             </column>
-            <column name="username" type="nvarchar(50)"/>
+            <column name="username" type="nvarchar(50)">
+                <constraints unique="true"/>
+            </column>
             <column name="first_name" type="nvarchar(50)"/>
             <column name="last_name" type="nvarchar(50)"/>
             <column name="password" type="nvarchar(64)"/>
