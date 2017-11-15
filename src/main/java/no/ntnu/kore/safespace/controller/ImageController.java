@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("images")
@@ -52,6 +53,9 @@ public class ImageController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<Image> add(@RequestBody Image image) {
+        if (image != null && (image.getName() == null || image.getName().equals(""))) {
+            image.setName(UUID.randomUUID().toString());
+        }
         image = imageRepository.save(image);
         if (image.getData() != null || image.getData().equals("")) {
             boolean success = saveImageToDisk(image);

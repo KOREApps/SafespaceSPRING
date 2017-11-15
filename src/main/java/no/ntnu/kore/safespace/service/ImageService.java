@@ -22,7 +22,12 @@ public class ImageService {
 
     public void saveB64ToDisk(Image image, String b64String) throws IOException {
         String[] strings = b64String.split(",");
-        byte[] data = Base64.getDecoder().decode(strings[1]);
+        byte[] data = null;
+        if (strings.length == 1) {
+            data = Base64.getDecoder().decode(strings[0]);
+        } else {
+            data = Base64.getDecoder().decode(strings[1]);
+        }
         saveToDisk(image, data);
     }
 
@@ -37,7 +42,7 @@ public class ImageService {
     }
 
     private Path getFilePath(Image image){
-        return Paths.get("", getFilePathString(image).split("/"));
+        return Paths.get("/", getFilePathString(image).split("/"));
     }
 
     private String getFilePathString(Image image){

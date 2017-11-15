@@ -92,5 +92,15 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="5" author="robert">
+        <addColumn tableName="image">
+            <column name="documentation" type="bigint">
+                <constraints foreignKeyName="images_documentation" references="documentation(id)"/>
+            </column>
+            <column name="report" type="bigint">
+                <constraints foreignKeyName="report_documentation" references="report(id)"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

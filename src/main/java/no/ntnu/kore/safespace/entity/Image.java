@@ -1,5 +1,6 @@
 package no.ntnu.kore.safespace.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,12 @@ public class Image {
     @Column(name = "file_extension")
     private String fileExtension;
     private String description;
+    @ManyToOne
+    @JoinColumn(name = "documentation")
+    private Documentation documentation;
+    @ManyToOne
+    @JoinColumn(name = "report")
+    private Report report;
     @Transient
     private String data;
 
