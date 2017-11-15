@@ -85,5 +85,12 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet id="4" author="robert">
+        <addColumn tableName="documentation">
+            <column name="user_account" type="bigint">
+                <constraints foreignKeyName="fkey_documentation_user_account" references="user_account(id)" nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
