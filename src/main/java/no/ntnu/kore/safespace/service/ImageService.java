@@ -1,9 +1,9 @@
 package no.ntnu.kore.safespace.service;
 
 import no.ntnu.kore.safespace.entity.Image;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.Base64;
@@ -11,12 +11,14 @@ import java.util.Base64;
 @Service
 public class ImageService {
 
-    @Value("${image.dir}")
-    private String path;
+    private final String PATH = "images";
 
 
     public void saveToDisk(Image image, byte[] data) throws IOException {
         Path file = getFilePath(image);
+        if (!imageDirectoryExists()) {
+            Files.createDirectory(Paths.get("", PATH));
+        }
         Files.write(file, data);
     }
 
@@ -42,15 +44,20 @@ public class ImageService {
     }
 
     private Path getFilePath(Image image){
-        return Paths.get("/", getFilePathString(image).split("/"));
+        return Paths.get("", getFilePathString(image).split("/"));
     }
 
     private String getFilePathString(Image image){
-        return path + getImageFileName(image);
+        return PATH + File.separatorChar + getImageFileName(image);
     }
 
     private String getImageFileName(Image image) {
         return image.getName() + "." + image.getFileExtension();
+    }
+
+    private boolean imageDirectoryExists(){
+        Path imagePath = Paths.get("", PATH);
+        return Files.exists(imagePath);
     }
 
 }
