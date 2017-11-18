@@ -1,6 +1,8 @@
 package no.ntnu.kore.safespace.controller;
 
+import no.ntnu.kore.safespace.entity.Image;
 import no.ntnu.kore.safespace.entity.Report;
+import no.ntnu.kore.safespace.repository.ImageRepository;
 import no.ntnu.kore.safespace.repository.ReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -79,4 +81,16 @@ public class ReportController implements RestService<Report, Long> {
         }
         return ValidCheckResult.OK;
     }
+
+    @RequestMapping(path = "{id}/images")
+    public ResponseEntity<List<Image>> getImages(@PathVariable(value = "id") Long id) {
+        Report report = reportRepository.findOne(id);
+        if (report != null) {
+            return new ResponseEntity<>(report.getImages(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
 }

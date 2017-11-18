@@ -1,6 +1,8 @@
 package no.ntnu.kore.safespace.controller;
 
 import no.ntnu.kore.safespace.entity.Documentation;
+import no.ntnu.kore.safespace.entity.Image;
+import no.ntnu.kore.safespace.entity.Report;
 import no.ntnu.kore.safespace.repository.DocumentationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 @RestController
@@ -77,4 +81,16 @@ public class DocumentationController implements RestService<Documentation, Long>
         }
         return ValidCheckResult.OK;
     }
+
+    @RequestMapping(path = "{id}/images")
+    public ResponseEntity<List<Image>> getImages(@PathVariable(value = "id") Long id) {
+        Documentation documentation = documentationRepository.findOne(id);
+        if (documentation != null) {
+            return new ResponseEntity<>(documentation.getImages(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
 }

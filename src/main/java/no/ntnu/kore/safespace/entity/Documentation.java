@@ -1,10 +1,12 @@
 package no.ntnu.kore.safespace.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -23,5 +25,8 @@ public class Documentation {
     @ManyToOne
     @JoinColumn(name = "user_account")
     private User user;
+    @JsonIgnore
+    @OneToMany(mappedBy = "documentation")
+    private List<Image> images;
 
 }
