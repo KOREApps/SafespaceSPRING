@@ -102,5 +102,24 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="6" author="robert">
+        <addColumn tableName="user_account">
+            <column name="enabled" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <!--<createTable tableName="user_credential">-->
+            <!--<column name="id" type="bigint">-->
+                <!--<constraints primaryKey="true" primaryKeyName="pkey_users"/>-->
+            <!--</column>-->
+            <!--<column name="username" type="nvarchar(50)">-->
+                <!--<constraints unique="true" nullable="false"/>-->
+            <!--</column>-->
+            <!--<column name="password" type="nvarchar(60)">-->
+                <!--<constraints nullable="false"/>-->
+            <!--</column>-->
+        <!--</createTable>-->
+    </changeSet>
+
 
 </databaseChangeLog>

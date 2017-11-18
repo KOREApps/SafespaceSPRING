@@ -8,6 +8,7 @@ import no.ntnu.kore.safespace.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,11 +22,13 @@ public class UserController implements RestService<User, Long> {
 
     private UserRepository userRepository;
     private RoleRepository roleRepository;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserController(UserRepository userRepository, RoleRepository roleRepository){
+    public UserController(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -45,10 +48,15 @@ public class UserController implements RestService<User, Long> {
         }
         ValidCheckResult validCheckResult = validPost(user);
         if (validCheckResult.isValid()) {
+            hashUserPassword(user);
             return new ResponseEntity<>(userRepository.save(user), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(validCheckResult, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    private void hashUserPassword(User user){
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
     }
 
     @Override
@@ -57,6 +65,10 @@ public class UserController implements RestService<User, Long> {
             return new ValidCheckResult(false, "New entity id must be null");
         } else if (userRepository.findUserByUsernameIgnoreCase(newEntity.getUsername()) != null) {
             return new ValidCheckResult(false, "Username is already taken");
+        } else if (newEntity.getPassword() == null) {
+            return new ValidCheckResult(false, "Password can't be null value");
+        } else if (newEntity.getPassword().length() <= 8) {
+            return new ValidCheckResult(false, "Password must be 8 or more characters");
         }
         return ValidCheckResult.OK;
     }
