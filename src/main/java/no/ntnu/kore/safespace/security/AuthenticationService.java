@@ -27,8 +27,6 @@ public class AuthenticationService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserCredentials credentials = credentialsRepository.getUserCredentials(username);
         GrantedAuthority authority = new SimpleGrantedAuthority(credentials.getRole());
-        UserDetails userDetails = new User(
-                credentials.getUsername(), credentials.getPassword(), Arrays.asList(authority));
-        return userDetails;
+        return new User(credentials.getUsername(), credentials.getPassword(), Arrays.asList(authority));
     }
 }

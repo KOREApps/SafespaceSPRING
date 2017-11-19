@@ -3,6 +3,7 @@ package no.ntnu.kore.safespace.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,20 +17,19 @@ import javax.sql.DataSource;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private DataSource dataSource;
-    @Autowired
-    Environment environment;
-    @Autowired
     AuthenticationService authenticationService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .anyRequest()
-                .hasRole("ADMIN")
-                .and()
-                .httpBasic();
-        http.authorizeRequests().and().antMatcher("/users").authorizeRequests().anyRequest().permitAll();
+        http
+            .authorizeRequests()
+            .antMatchers(HttpMethod.POST, "/users")
+            .permitAll()
+            .and()
+        .httpBasic().and()
+            .authorizeRequests()
+            .anyRequest()
+            .hasRole("USER");
         http.csrf().disable();
     }
 
@@ -40,17 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .password("safespace")
                 .roles("ADMIN");
         auth.userDetailsService(authenticationService).passwordEncoder(passwordEncoder);
-//        auth.jdbcAuthentication()
-//                .dataSource(dataSource)
-//                .usersByUsernameQuery("SELECT username, password, enabled FROM users WHERE username = ?")
-//                .authoritiesByUsernameQuery("SELECT username, authority FROM authorities WHERE username = ?")
-//                .passwordEncoder(passwordEncoder);
-
-//        auth.jdbcAuthentication()
-//                .dataSource(dataSource)
-//                .withUser("robert").roles("ADMIN").password(passwordEncoder.encode("asdf1234"))
-//                .and()
-//                .withUser("rabbert").roles("USER").password(passwordEncoder.encode("ASDF1234"));
     }
 
 

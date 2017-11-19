@@ -69,8 +69,15 @@ public class UserController implements RestService<User, Long> {
             return new ValidCheckResult(false, "Password can't be null value");
         } else if (newEntity.getPassword().length() <= 8) {
             return new ValidCheckResult(false, "Password must be 8 or more characters");
+        } else if (newEntity.getRole() == null || !newEntity.getRole().getName().equals("ROLE_USER")) {
+            setDefaultRole(newEntity);
         }
         return ValidCheckResult.OK;
+    }
+
+    private void setDefaultRole(User newUser) {
+        Role defaultRole = roleRepository.getRoleByNameIgnoreCase("ROLE_USER");
+        newUser.setRole(defaultRole);
     }
 
     @Override
@@ -97,7 +104,7 @@ public class UserController implements RestService<User, Long> {
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public ResponseEntity getUserWithCredentials(@RequestBody UserCredentials userCredentials) {
         User user = userRepository.findUserByUsernameIgnoreCase(userCredentials.getUsername());
-        if (user != null && userCredentials.getPassword().equalsIgnoreCase(user.getPassword())) {
+        if (user != null && passwordEncoder.matches(userCredentials.getPassword(), user.getPassword())) {
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

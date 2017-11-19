@@ -14,9 +14,6 @@ import javax.sql.DataSource;
 @Configuration
 public class SafeSpaceConfig {
 
-    @Autowired
-    Environment environment;
-
     @Bean
     public PasswordEncoder getPasswordEncoder(){
         return new BCryptPasswordEncoder();
