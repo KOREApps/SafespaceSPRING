@@ -14,10 +14,10 @@
             <column name="name" type="nvarchar(50)"/>
         </createTable>
         <insert tableName="role">
-            <column name="name" value="ADMIN"/>
+            <column name="name" value="ROLE_ADMIN"/>
         </insert>
         <insert tableName="role">
-            <column name="name" value="USER"/>
+            <column name="name" value="ROLE_USER"/>
         </insert>
         <createTable tableName="user_account">
             <column name="id" autoIncrement="true" type="bigint">
@@ -102,5 +102,13 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="6" author="robert">
+        <addColumn tableName="user_account">
+            <column name="enabled" type="boolean" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 
 </databaseChangeLog>
