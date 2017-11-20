@@ -3,6 +3,7 @@ package no.ntnu.kore.safespace.controller;
 import no.ntnu.kore.safespace.entity.Image;
 import no.ntnu.kore.safespace.entity.Report;
 import no.ntnu.kore.safespace.repository.ImageRepository;
+import no.ntnu.kore.safespace.repository.ProjectRepository;
 import no.ntnu.kore.safespace.repository.ReportRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,10 +20,12 @@ import java.util.List;
 public class ReportController implements RestService<Report, Long> {
 
     private ReportRepository reportRepository;
+    private ProjectRepository projectRepository;
 
     @Autowired
-    public ReportController(ReportRepository reportRepository) {
+    public ReportController(ReportRepository reportRepository, ProjectRepository projectRepository) {
         this.reportRepository = reportRepository;
+        this.projectRepository = projectRepository;
     }
 
 
@@ -48,7 +51,7 @@ public class ReportController implements RestService<Report, Long> {
             report = reportRepository.save(report);
             return new ResponseEntity<>(report, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(validCheckResult, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -56,6 +59,10 @@ public class ReportController implements RestService<Report, Long> {
     public ValidCheckResult validPost(Report newEntity) {
         if (newEntity.getId() != null) {
             return new ValidCheckResult(false, "New entity id must be null");
+        } else if (newEntity.getProject() == null || newEntity.getProject().getId() == null) {
+            return new ValidCheckResult(false, "Project must be defined");
+        } else if (!projectRepository.exists(newEntity.getProject().getId())) {
+            return new ValidCheckResult(false, "Selected project does not exist");
         }
         return new ValidCheckResult(true, "Valid");
     }

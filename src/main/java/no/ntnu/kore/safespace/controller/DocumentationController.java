@@ -4,6 +4,7 @@ import no.ntnu.kore.safespace.entity.Documentation;
 import no.ntnu.kore.safespace.entity.Image;
 import no.ntnu.kore.safespace.entity.Report;
 import no.ntnu.kore.safespace.repository.DocumentationRepository;
+import no.ntnu.kore.safespace.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +21,12 @@ import java.util.List;
 public class DocumentationController implements RestService<Documentation, Long> {
 
     private DocumentationRepository documentationRepository;
+    private ProjectRepository projectRepository;
 
     @Autowired
-    public DocumentationController(DocumentationRepository documentationRepository){
+    public DocumentationController(DocumentationRepository documentationRepository, ProjectRepository projectRepository){
         this.documentationRepository = documentationRepository;
+        this.projectRepository = projectRepository;
     }
 
     @Override
@@ -56,8 +59,13 @@ public class DocumentationController implements RestService<Documentation, Long>
     public ValidCheckResult validPost(Documentation newEntity) {
         if (newEntity.getId() != null) {
             return new ValidCheckResult(false, "New entity id must be null");
+        } else if (newEntity.getProject() == null || newEntity.getProject().getId() == null) {
+            return new ValidCheckResult(false, "Project must be defined");
+        } else if (!projectRepository.exists(newEntity.getProject().getId())) {
+            return new ValidCheckResult(false, "Project does not exist");
+        } else {
+            return ValidCheckResult.OK;
         }
-        return new ValidCheckResult(true, "Valid");
     }
 
     @Override
