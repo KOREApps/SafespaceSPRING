@@ -109,6 +109,25 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="7" author="robert">
+        <createTable tableName="known_location">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" primaryKeyName="pkey_known_location"/>
+            </column>
+            <column name="name" type="nvarchar(100)">
+                <constraints nullable="false" />
+            </column>
+            <column name="latitude" type="double">
+                <constraints nullable="false"/>
+            </column>
+            <column name="longitude" type="double">
+                <constraints nullable="false"/>
+            </column>
+            <column name="radius" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 
 
 </databaseChangeLog>
