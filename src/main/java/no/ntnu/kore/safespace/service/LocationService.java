@@ -13,12 +13,23 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class DistanceService {
+public class LocationService {
 
     private KnownLocationRepository locationRepository;
 
-    public DistanceService(KnownLocationRepository locationRepository) {
+    public LocationService(KnownLocationRepository locationRepository) {
         this.locationRepository = locationRepository;
+    }
+
+    public Optional<KnownLocation> getCurrentLocation(Location location) {
+        KnownLocation nearestLocation = getNearest(location);
+        Location loc = new Location(nearestLocation);
+        double distance = getDistance(location, loc);
+        if (distance < nearestLocation.getRadius()) {
+            return Optional.of(nearestLocation);
+        } else {
+            return Optional.empty();
+        }
     }
 
     public KnownLocation getNearest(Location location){
