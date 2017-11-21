@@ -26,15 +26,12 @@ public class UserCredentialsRepository {
                 "WHERE u.enabled = TRUE and u.username = ?";
 
         UserCredentials userInfo =
-                (UserCredentials) jdbcTemplate.queryForObject(sql, new Object[]{username}, new RowMapper<UserCredentials>() {
-                    @Override
-                    public UserCredentials mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        UserCredentials userInfo = new UserCredentials();
-                        userInfo.setUsername(rs.getString("username"));
-                        userInfo.setPassword(rs.getString("password"));
-                        userInfo.setRole(rs.getString("name"));
-                        return userInfo;
-                    }
+                (UserCredentials) jdbcTemplate.queryForObject(sql, new Object[]{username}, (rs, rowNum) -> {
+                    UserCredentials userInfo1 = new UserCredentials();
+                    userInfo1.setUsername(rs.getString("username"));
+                    userInfo1.setPassword(rs.getString("password"));
+                    userInfo1.setRole(rs.getString("name"));
+                    return userInfo1;
                 });
         return userInfo;
     }

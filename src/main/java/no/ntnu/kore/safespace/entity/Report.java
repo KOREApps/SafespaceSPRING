@@ -27,5 +27,8 @@ public class Report {
     @JsonIgnore
     @OneToMany(mappedBy = "report")
     private List<Image> images;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "location")
+    private Location location;
 
 }

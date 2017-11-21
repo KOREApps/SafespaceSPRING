@@ -2,13 +2,15 @@ package no.ntnu.kore.safespace.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-@Data
+@Getter
+@EqualsAndHashCode
 @AllArgsConstructor
 public class Location {
 
-    private double longitude;
-    private double latitude;
-
+    private final double longitude;
+    private final double latitude;
 
 }
