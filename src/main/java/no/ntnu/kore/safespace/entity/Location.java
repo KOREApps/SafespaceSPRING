@@ -22,4 +22,11 @@ public class Location {
     private Double longitude;
     private Integer accuracy;
 
+    public Location (KnownLocation knownLocation) {
+        this.id = null;
+        this.latitude = knownLocation.getLatitude();
+        this.longitude = knownLocation.getLongitude();
+        this.accuracy = 0;
+    }
+
 }
