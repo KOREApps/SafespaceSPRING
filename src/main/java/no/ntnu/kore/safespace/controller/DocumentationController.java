@@ -2,7 +2,6 @@ package no.ntnu.kore.safespace.controller;
 
 import no.ntnu.kore.safespace.entity.Documentation;
 import no.ntnu.kore.safespace.entity.Image;
-import no.ntnu.kore.safespace.entity.Report;
 import no.ntnu.kore.safespace.repository.DocumentationRepository;
 import no.ntnu.kore.safespace.repository.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;

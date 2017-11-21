@@ -3,7 +3,6 @@ package no.ntnu.kore.safespace.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import no.ntnu.kore.safespace.entity.Role;
 
 @AllArgsConstructor
 @NoArgsConstructor

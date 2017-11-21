@@ -2,7 +2,6 @@ package no.ntnu.kore.safespace.controller;
 
 import no.ntnu.kore.safespace.entity.Project;
 import no.ntnu.kore.safespace.repository.ProjectRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
