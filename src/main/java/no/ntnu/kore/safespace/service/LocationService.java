@@ -49,7 +49,7 @@ public class LocationService {
                 .map(DistanceCheckResult::getTarget)
                 .collect(Collectors.toList());
         if (results.size() > n) {
-            knownLocations = knownLocations.subList(0, n+1);
+            knownLocations = knownLocations.subList(0, n);
         }
         return knownLocations;
     }
