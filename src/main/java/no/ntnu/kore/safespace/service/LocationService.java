@@ -22,14 +22,22 @@ public class LocationService {
     }
 
     public Optional<KnownLocation> getCurrentLocation(Location location) {
-        KnownLocation nearestLocation = getNearest(location);
-        Location loc = new Location(nearestLocation);
-        double distance = getDistance(location, loc);
-        if (distance < nearestLocation.getRadius()) {
-            return Optional.of(nearestLocation);
+        List<KnownLocation> knownLocationsInRange = getKnownLocationsWithinRange(location);
+        if (knownLocationsInRange.size() > 0) {
+            return Optional.ofNullable(knownLocationsInRange.get(0));
         } else {
             return Optional.empty();
         }
+    }
+
+    private List<KnownLocation> getKnownLocationsWithinRange(Location location){
+        List<DistanceCheckResult> results = getDistanceToKnownLocations(location, locationRepository.findAll());
+        results.stream()
+                .filter(distanceCheckResult -> {
+                    Double radius = distanceCheckResult.getTarget().getRadius().doubleValue();
+                    return distanceCheckResult.getDistance() >= radius; });
+        sortDistanceResults(results);
+        return results.stream().map(DistanceCheckResult::getTarget).collect(Collectors.toList());
     }
 
     public KnownLocation getNearest(Location location){
@@ -38,12 +46,8 @@ public class LocationService {
 
     public List<KnownLocation> getNearestN(Location location, int n) {
         List<KnownLocation> locations = locationRepository.findAll();
-        List<DistanceCheckResult> results = locations
-                .stream()
-                .map((knownLocation -> {
-                    return new DistanceCheckResult(location, knownLocation, getDistance(location, new Location(knownLocation)));
-                })).collect(Collectors.toList());
-        Collections.sort(results, Comparator.comparingDouble(DistanceCheckResult::getDistance));
+        List<DistanceCheckResult> results = getDistanceToKnownLocations(location, locations);
+        sortDistanceResults(results);
         List<KnownLocation> knownLocations = results
                 .stream()
                 .map(DistanceCheckResult::getTarget)
@@ -54,7 +58,19 @@ public class LocationService {
         return knownLocations;
     }
 
-    public double getDistance(double lat1, double lon1, double lat2, double lon2) {
+    private List<DistanceCheckResult> getDistanceToKnownLocations(Location origin, List<KnownLocation> knownLocations){
+        return knownLocations
+                .stream()
+                .map(knownLocation -> {
+                    return new DistanceCheckResult(origin, knownLocation, getDistance(origin, new Location(knownLocation)));
+                }).collect(Collectors.toList());
+    }
+
+    private void sortDistanceResults(List<DistanceCheckResult> results){
+        results.sort(Comparator.comparingDouble(DistanceCheckResult::getDistance));
+    }
+
+    private double getDistance(double lat1, double lon1, double lat2, double lon2) {
         double theta = lon1 - lon2;
         double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
         dist = Math.acos(dist);
@@ -64,7 +80,6 @@ public class LocationService {
     }
 
     public double getDistance(Location from, Location to) {
-
         return getDistance(from.getLatitude(), from.getLongitude(), to.getLatitude(), to.getLongitude());
     }
 
