@@ -32,10 +32,11 @@ public class LocationService {
 
     private List<KnownLocation> getKnownLocationsWithinRange(Location location){
         List<DistanceCheckResult> results = getDistanceToKnownLocations(location, locationRepository.findAll());
-        results.stream()
+        results = results.stream()
                 .filter(distanceCheckResult -> {
                     Double radius = distanceCheckResult.getTarget().getRadius().doubleValue();
-                    return distanceCheckResult.getDistance() >= radius; });
+                    return distanceCheckResult.getDistance() <= radius;
+                }).collect(Collectors.toList());
         sortDistanceResults(results);
         return results.stream().map(DistanceCheckResult::getTarget).collect(Collectors.toList());
     }
