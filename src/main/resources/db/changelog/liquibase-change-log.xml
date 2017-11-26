@@ -152,4 +152,7 @@
     <changeSet id="9" author="robert">
         <renameTable oldTableName="bug_reports" newTableName="bug_report"/>
     </changeSet>
+    <changeSet id="10" author="robert">
+        <dropNotNullConstraint tableName="bug_report" columnName="user_account"/>
+    </changeSet>
 </databaseChangeLog>
