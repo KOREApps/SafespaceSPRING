@@ -7,6 +7,10 @@ import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 
+/**
+ * Class that handles retrieving user authentication information from the database.
+ * @author robert
+ */
 @Repository
 public class UserCredentialsRepository {
 

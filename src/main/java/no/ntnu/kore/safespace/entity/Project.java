@@ -9,6 +9,10 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.List;
 
+/**
+ * Class representing a entity of the table project
+ * @author robert
+ */
 @Entity
 @Data
 @NoArgsConstructor

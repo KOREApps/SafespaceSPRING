@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Rest controller for reports. Currently handles Create, Read and Update operations on reports
+ */
 @RestController
 @RequestMapping("reports")
 public class ReportController implements RestService<Report, Long> {

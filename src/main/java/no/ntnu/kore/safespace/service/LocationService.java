@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Class that provides functionality for locations
+ */
 @Service
 public class LocationService {
 
@@ -21,6 +24,11 @@ public class LocationService {
         this.locationRepository = locationRepository;
     }
 
+    /**
+     * Tries to find a known location within the given locations range
+     * @param location origin location
+     * @return Optional containing KnownLocation if one is found otherwise empty
+     */
     public Optional<KnownLocation> getCurrentLocation(Location location) {
         List<KnownLocation> knownLocationsInRange = getKnownLocationsWithinRange(location);
         if (knownLocationsInRange.size() > 0) {
@@ -30,6 +38,11 @@ public class LocationService {
         }
     }
 
+    /**
+     * Finds KnownLocations within range of given location
+     * @param location origin location
+     * @return List of known locations within range of given location
+     */
     private List<KnownLocation> getKnownLocationsWithinRange(Location location){
         List<DistanceCheckResult> results = getDistanceToKnownLocations(location, locationRepository.findAll());
         results = results.stream()
@@ -41,10 +54,21 @@ public class LocationService {
         return results.stream().map(DistanceCheckResult::getTarget).collect(Collectors.toList());
     }
 
+    /**
+     * Finds the nearest KnownLocation
+     * @param location origin location
+     * @return Nearest known location
+     */
     public KnownLocation getNearest(Location location){
         return getNearestN(location, 1).get(0);
     }
 
+    /**
+     * Find the nearest n KnownLocations
+     * @param location origin location
+     * @param n number of locations to find
+     * @return List of known locations within range
+     */
     public List<KnownLocation> getNearestN(Location location, int n) {
         List<KnownLocation> locations = locationRepository.findAll();
         List<DistanceCheckResult> results = getDistanceToKnownLocations(location, locations);
@@ -59,6 +83,12 @@ public class LocationService {
         return knownLocations;
     }
 
+    /***
+     * Finds the distance between given location and all given KnownLocations
+     * @param origin origin location
+     * @param knownLocations list of known locations to calculate distance to
+     * @return List of DistanceCheckResults
+     */
     private List<DistanceCheckResult> getDistanceToKnownLocations(Location origin, List<KnownLocation> knownLocations){
         return knownLocations
                 .stream()
@@ -67,10 +97,22 @@ public class LocationService {
                 }).collect(Collectors.toList());
     }
 
+    /**
+     * Sorts given list of DistanceCheckResults from lowest to highest distance
+     * @param results sorted list of DistanceCheckResults
+     */
     private void sortDistanceResults(List<DistanceCheckResult> results){
         results.sort(Comparator.comparingDouble(DistanceCheckResult::getDistance));
     }
 
+    /**
+     * Calculates the distance between given locations
+     * @param lat1 Latitude of location 1
+     * @param lon1 Longitude of location 1
+     * @param lat2 Latitude of location 2
+     * @param lon2 Longitude of location 2
+     * @return double representing the distance between the given locations.
+     */
     private double getDistance(double lat1, double lon1, double lat2, double lon2) {
         double theta = lon1 - lon2;
         double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
@@ -80,6 +122,12 @@ public class LocationService {
         return (dist * 1.609344) * 1000;
     }
 
+    /**
+     * Calculates the distance between given locations
+     * @param from Location 1
+     * @param to Location 2
+     * @return double representing the distance between the given locations.
+     */
     public double getDistance(Location from, Location to) {
         return getDistance(from.getLatitude(), from.getLongitude(), to.getLatitude(), to.getLongitude());
     }

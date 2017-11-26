@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Rest controller for projects. Currently handles Create, Read and Update operations on projects
+ */
 @RestController
 @RequestMapping("projects")
 public class ProjectController implements RestService<Project, Long> {

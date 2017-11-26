@@ -6,6 +6,11 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+/**
+ * Class representing a entity of the image table. Has one database transient field to hold data that should not be
+ * included in the database entity.
+ * @author robert
+ */
 @Entity
 @Data
 @AllArgsConstructor

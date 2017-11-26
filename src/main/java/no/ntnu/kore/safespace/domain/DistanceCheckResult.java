@@ -17,10 +17,4 @@ public class DistanceCheckResult {
     private KnownLocation target;
     private double distance;
 
-    public class Comparator implements java.util.Comparator<DistanceCheckResult> {
-        @Override
-        public int compare(DistanceCheckResult distanceCheckResult, DistanceCheckResult t1) {
-            return Double.compare(distanceCheckResult.getDistance(), t1.distance);
-        }
-    }
 }

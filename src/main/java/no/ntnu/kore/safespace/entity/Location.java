@@ -9,6 +9,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+/**
+ * Class representing a entity of the table location
+ * @author robert
+ */
 @Entity
 @Data
 @AllArgsConstructor

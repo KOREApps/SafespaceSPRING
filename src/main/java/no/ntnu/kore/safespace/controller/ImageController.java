@@ -15,6 +15,10 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Controller for images. Can handle requests for image info and image data separately.
+ * @author robert
+ */
 @RestController
 @RequestMapping("images")
 public class ImageController {
@@ -34,14 +38,25 @@ public class ImageController {
         this.imageService = imageService;
     }
 
+    /**
+     * Returns info about all images
+     * @return info about all images
+     */
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<List<Image>> getAll(){
+    public ResponseEntity getAll(){
         List<Image> images = imageRepository.findAll();
         return new ResponseEntity<>(images, HttpStatus.OK);
     }
 
+    /**
+     * Returns info about one image. If RequestParam/QueryParam "withData" is set to true the images data will be
+     * included in the image object.
+     * @param id id of the image
+     * @param withData boolean to indicate if data should be retrieved or not.
+     * @return ResponseEntity containing an image object
+     */
     @RequestMapping(path = "{id}", method = RequestMethod.GET)
-    public ResponseEntity<Image> getOne(
+    public ResponseEntity getOne(
             @PathVariable(value = "id") Long id,
             @RequestParam(value = "data", defaultValue = "false") boolean withData) {
         Image image = imageRepository.findOne(id);
@@ -51,8 +66,14 @@ public class ImageController {
         return new ResponseEntity<>(image, HttpStatus.OK);
     }
 
+    /**
+     * Adds a new image. Checks if image contains data.
+     * @param image image object to add
+     * @return ResponseEntity containing info about the newly added image and code 200 OK, if an error occured the
+     * response entity will return code 500 INTERNAL_SERVER_ERROR
+     */
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<Image> add(@RequestBody Image image) {
+    public ResponseEntity add(@RequestBody Image image) {
         if (image != null && (image.getName() == null || image.getName().equals(""))) {
             image.setName(UUID.randomUUID().toString());
         }
@@ -66,18 +87,32 @@ public class ImageController {
         return new ResponseEntity<>(image, HttpStatus.OK);
     }
 
+    /**
+     * Updates an existing image object
+     * @param id id of existing image to update
+     * @param image the new image update to update the old
+     * @return ResponseEntity containing the updated image object and code 200 OK, if an error occured the response entity
+     * will have code 400 BAD_REQUEST
+     */
     @RequestMapping(path = "{id}", method = RequestMethod.PUT)
-    public ResponseEntity<Image> update(Long id, @RequestBody Image image) {
+    public ResponseEntity update(Long id, @RequestBody Image image) {
         if (imageRepository.exists(id)) {
             image = imageRepository.save(image);
             return new ResponseEntity<>(image, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(image, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(image, HttpStatus.BAD_REQUEST);
         }
     }
 
+    /**
+     * Adds given image data to an existing image object
+     * @param id id of image to add data to
+     * @param data data to add
+     * @return ResponseEntity containing the image object the data was added to with code 200 OK, if an error occured
+     * code 500 INTERNAL_SERVER_ERROR will be returned.
+     */
     @RequestMapping(path = "data/{id}", method = RequestMethod.POST)
-    public ResponseEntity<Image> addImageData(@PathVariable(value = "id") Long id, @RequestBody byte data[]){
+    public ResponseEntity addImageData(@PathVariable(value = "id") Long id, @RequestBody byte data[]){
         Image image = imageRepository.findOne(id);
         boolean success = saveImageToDisk(image, data);
         if (success) {
@@ -87,15 +122,20 @@ public class ImageController {
         }
     }
 
+    /**
+     * Returns the image data for the image object with the given id
+     * @param id id of the image object to retrieve data for
+     * @return data of the image with given id. Media type depends on image info
+     */
     @RequestMapping(path = "data/{id}", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> getImageData(@PathVariable(value = "id") Long id) {
+    public ResponseEntity getImageData(@PathVariable(value = "id") Long id) {
         Image image = imageRepository.findOne(id);
         try {
             byte[] data = imageService.getDataFromDisk(image);
             return ResponseEntity.ok().contentType(getMediaType(image)).body(data);
         } catch (IOException ex) {
             LOG.warn("Failed to read image from disk", ex);
-            return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -128,6 +168,11 @@ public class ImageController {
         }
     }
 
+    /**
+     * Returns the media type of image. If none is found BYTE_TYPE is returned.
+     * @param image
+     * @return
+     */
     private MediaType getMediaType(Image image) {
         if (image.getFileExtension().equals("jpg") || image.getFileExtension().equals("jpeg")) {
             return JPEG_TYPE;

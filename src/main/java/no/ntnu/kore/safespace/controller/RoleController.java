@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Rest controller for roles. Currently handles Create, Read and Update operations on roles
+ * @author robert
+ */
 @RestController
 @RequestMapping("roles")
 public class RoleController implements RestService<Role, Long> {

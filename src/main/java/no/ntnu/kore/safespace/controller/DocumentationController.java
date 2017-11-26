@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-
+/**
+ * Rest controller for documentations. Currently handles Create, Read and Update operations on documentations
+ * @author robert
+ */
 @RestController
 @RequestMapping("documentations")
 public class DocumentationController implements RestService<Documentation, Long> {

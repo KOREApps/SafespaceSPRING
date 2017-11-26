@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
+/**
+ * Rest controller for bug reports. Currently handles Create, Read and Update operations on bug reports
+ * @author robert
+ */
 @RestController
 @RequestMapping("bugs")
 public class BugReportController implements RestService<BugReport, Long> {

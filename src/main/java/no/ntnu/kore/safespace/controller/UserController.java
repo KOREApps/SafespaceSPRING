@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Rest controller for users. Currently handles Create, Read and Update operations on users.
+ * This controller can also check if submitted user credentials are valid.
+ * @author robert
+ */
 @RestController
 @RequestMapping("users")
 public class UserController implements RestService<User, Long> {
@@ -101,13 +106,19 @@ public class UserController implements RestService<User, Long> {
         return ValidCheckResult.OK;
     }
 
+    /**
+     * Checks if the given user credentials are valid.
+     * @param userCredentials the user credentials.
+     * @return ResponseEntity containing the user object and code 200 OK if the credentials were valid. If credentials
+     * were invalid the response is empty with code 400 BAD_REQUEST
+     */
     @RequestMapping(value = "login", method = RequestMethod.POST)
     public ResponseEntity getUserWithCredentials(@RequestBody UserCredentials userCredentials) {
         User user = userRepository.findUserByUsernameIgnoreCase(userCredentials.getUsername());
         if (user != null && passwordEncoder.matches(userCredentials.getPassword(), user.getPassword())) {
             return new ResponseEntity<>(user, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 }

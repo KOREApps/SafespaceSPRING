@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+/**
+ * Class representing a entity of the table user_account
+ * @author robert
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

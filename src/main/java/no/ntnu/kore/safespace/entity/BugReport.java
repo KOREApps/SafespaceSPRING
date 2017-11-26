@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+/**
+ * Class representing a entity of the table bug_report
+ * @author robert
+ */
 @Entity
 @Table(name = "bug_report")
 @Data
@@ -18,6 +22,5 @@ public class BugReport {
     private Long id;
     private String title;
     private String description;
-    //private User user;
 
 }
