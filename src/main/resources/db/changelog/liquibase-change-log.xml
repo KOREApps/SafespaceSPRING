@@ -149,4 +149,7 @@
             </column>
         </addColumn>
     </changeSet>
+    <changeSet id="9" author="robert">
+        <renameTable oldTableName="bug_reports" newTableName="bug_report"/>
+    </changeSet>
 </databaseChangeLog>
