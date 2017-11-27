@@ -132,16 +132,20 @@ public class LocationService {
         return getDistance(from.getLatitude(), from.getLongitude(), to.getLatitude(), to.getLongitude());
     }
 
-    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-    /*::  This function converts decimal degrees to radians             :*/
-    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+    /**
+     * This function converts decimal degrees to radians
+     * @param deg Decimal degrees
+     * @return
+     */
     private double deg2rad(double deg) {
         return (deg * Math.PI / 180.0);
     }
 
-    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-    /*::  This function converts radians to decimal degrees             :*/
-    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+    /**
+     * This function converts radians to decimal degrees
+     * @param rad Radians
+     * @return
+     */
     private double rad2deg(double rad) {
         return (rad * 180.0 / Math.PI);
     }
